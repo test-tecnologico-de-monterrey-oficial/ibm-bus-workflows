@@ -49,7 +49,6 @@ jobs:
     runs-on: [self-hosted, linux, x64, BUS]
     timeout-minutes: 5
     needs: package
-    environment: develop
     steps:
       - name: Realizar despliegue a IBM Integration Bus
         run: |
