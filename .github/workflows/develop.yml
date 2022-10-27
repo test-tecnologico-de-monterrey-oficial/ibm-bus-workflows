@@ -35,13 +35,15 @@ jobs:
     timeout-minutes: 5 
     environment: develop
     steps:
-      - uses: actions/checkout@v3
-      - name: Generar archivo bar de despliegue
+      - name: Descargar Repositorio al Runner
+        uses: actions/checkout@v3
+      - name: Generar empaquetado bar
         run: |
           echo The AMBIENTE is 1.1.1
           chmod +x $PACKAGE_SCRIPT_PATH 
           $PACKAGE_SCRIPT_PATH
-      - uses: actions/upload-artifact@v3
+      - name: Cargar empaquetado bar a github
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PROJECT_NAME }}
           path: ${{ github.workspace }}/bar/${{ env.PROJECT_NAME }}.bar      
@@ -50,7 +52,7 @@ jobs:
     timeout-minutes: 5
     needs: package
     steps:
-      - name: Realizar despliegue a IBM Integration Bus
+      - name: Realizar despliegue al Nodo de Integración
         run: |
           chmod +x $DEPLOY_SCRIPT_PATH 
           $DEPLOY_SCRIPT_PATH
