@@ -23,35 +23,29 @@ env:
   SERVER_NAME: ${{ secrets.SERVER_NAME }}
   OVERRIDE_PROPERTIES: ${{ secrets.OVERRIDE_PROPERTIES }}
   CONNECTION_BROKER: ${{ secrets.IIB_DEVL_CONNECTION_BROKER }}
-  CONNECTION_BROKER_PASSWORD: ${{ secrets.IIB_DEVL_CONNECTION_BROKER_PASSWORD }}
-  CONNECTION_BROKER_PATH: ${{ secrets.IIB_DEVL_CONNECTION_BROKER_PATH }}
   PACKAGE_SCRIPT_PATH: ${{ secrets.IIB_PACKAGE_SCRIPT_PATH }}
   DEPLOY_SCRIPT_PATH: ${{ secrets.IIB_DEPLOY_SCRIPT_PATH }}
   CLEAN_SCRIPT_PATH: ${{ secrets.IIB_CLEAN_SCRIPT_PATH }}
 
 jobs:
-  package:
+  packageAndDeploy:
     runs-on: [self-hosted, linux, x64, BUS]    
     timeout-minutes: 5 
     environment: release
     steps:
-      - uses: actions/checkout@v3
-      - name: Generar archivo bar de despliegue
+      - name: Descargar Repositorio al Runner
+        uses: actions/checkout@v3
+      - name: Generar empaquetado bar
         run: |
           echo The AMBIENTE is 1.1.1
           chmod +x $PACKAGE_SCRIPT_PATH 
           $PACKAGE_SCRIPT_PATH
-      - uses: actions/upload-artifact@v3
+      - name: Cargar empaquetado bar a github
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PROJECT_NAME }}
-          path: ${{ github.workspace }}/bar/${{ env.PROJECT_NAME }}.bar      
-  deploy:
-    runs-on: [self-hosted, linux, x64, BUS]
-    timeout-minutes: 5
-    needs: package
-    environment: release
-    steps:
-      - name: Realizar despliegue a IBM Integration Bus
+          path: ${{ github.workspace }}/bar/${{ env.PROJECT_NAME }}.bar   
+      - name: Realizar despliegue al Nodo de Integración
         run: |
           chmod +x $DEPLOY_SCRIPT_PATH 
           $DEPLOY_SCRIPT_PATH
@@ -59,7 +53,7 @@ jobs:
     runs-on: [self-hosted, linux, x64, BUS]
     timeout-minutes: 5
     if: ${{ always() }}
-    needs: deploy
+    needs: packageAndDeploy
     steps:
       - name: Remover directorio y archivos del respositorio
         run: |
