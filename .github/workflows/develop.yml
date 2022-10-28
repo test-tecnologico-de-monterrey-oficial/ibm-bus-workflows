@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PROJECT_NAME }}
-          path: ${{ github.workspace }}/bar/${{ env.PROJECT_NAME }}.bar    
+          path: ${{ github.workspace }}/bar/${{ env.PROJECT_NAME }}.bar   
       - name: Realizar despliegue al Nodo de Integración
         run: |
           chmod +x $DEPLOY_SCRIPT_PATH 
