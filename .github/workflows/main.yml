@@ -61,7 +61,7 @@ jobs:
           chmod +x $DEPLOY_SCRIPT_PATH 
           $DEPLOY_SCRIPT_PATH
         env:
-          CONNECTION_BROKER: "$CONNECTION_BROKER2"
+          CONNECTION_BROKER: ${{ env.CONNECTION_BROKER2 }}
   clean:
     runs-on: [self-hosted, linux, x64, BUS]
     timeout-minutes: 5
