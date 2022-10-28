@@ -1,4 +1,4 @@
-name: DevOps IBM Bus Develop
+name: DevOps IBM Bus Main
 
 on:
   workflow_call:
@@ -22,7 +22,8 @@ env:
   RUN_CREATE_BAR: ${{ inputs.RUN_CREATE_BAR }}
   SERVER_NAME: ${{ secrets.SERVER_NAME }}
   OVERRIDE_PROPERTIES: ${{ secrets.OVERRIDE_PROPERTIES }}
-  CONNECTION_BROKER: ${{ secrets.IIB_DEVL_CONNECTION_BROKER }}
+  CONNECTION_BROKER: ${{ secrets.IIB_PROD_CONNECTION_BROKER }}
+  CONNECTION_BROKER2: ${{ secrets.IIB_PROD2_CONNECTION_BROKER }}
   PACKAGE_SCRIPT_PATH: ${{ secrets.IIB_PACKAGE_SCRIPT_PATH }}
   DEPLOY_SCRIPT_PATH: ${{ secrets.IIB_DEPLOY_SCRIPT_PATH }}
   CLEAN_SCRIPT_PATH: ${{ secrets.IIB_CLEAN_SCRIPT_PATH }}
@@ -31,7 +32,7 @@ jobs:
   packageAndDeploy:
     runs-on: [self-hosted, linux, x64, BUS]    
     timeout-minutes: 5 
-    environment: develop
+    environment: main
     steps:
       - name: Descargar Repositorio al Runner
         uses: actions/checkout@v3
@@ -49,11 +50,23 @@ jobs:
         run: |
           chmod +x $DEPLOY_SCRIPT_PATH 
           $DEPLOY_SCRIPT_PATH
+  deploy2:
+    runs-on: [self-hosted, linux, x64, BUS]
+    timeout-minutes: 5
+    needs: packageAndDeploy
+    environment: main2
+    steps:
+      - name: Realizar despliegue a IBM Integration Bus
+        run: |
+          chmod +x $DEPLOY_SCRIPT_PATH 
+          $DEPLOY_SCRIPT_PATH
+        env:
+          CONNECTION_BROKER: "$CONNECTION_BROKER2"
   clean:
     runs-on: [self-hosted, linux, x64, BUS]
     timeout-minutes: 5
     if: ${{ always() }}
-    needs: packageAndDeploy
+    needs: deploy2
     steps:
       - name: Remover directorio y archivos del respositorio
         run: |
