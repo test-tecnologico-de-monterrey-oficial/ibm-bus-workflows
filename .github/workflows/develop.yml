@@ -35,6 +35,8 @@ jobs:
     steps:
       - name: Descargar Repositorio al Runner
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Generar empaquetado bar
         run: |
           echo The AMBIENTE is 1.1.1
