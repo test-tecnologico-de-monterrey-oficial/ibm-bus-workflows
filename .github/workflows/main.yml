@@ -5,7 +5,11 @@ on:
     inputs:
       PROJECT_NAME:
         description: 'Nombre del proyecto o Aplicación Principal del BUS a procesar'
-        required: false
+        required: true
+        type: string
+      SERVER_NAME:
+        description: 'Nombre del servidor de integración, al que se realizara el despliegue del empaquetado .bar'
+        required: true
         type: string
       LIBRARY_NAME:
         description: 'Librería o Librerías que se desea incluir en el empaquetado, separados por espacio ejemplo: LibraryName1 LibraryName2 .... LibraryNamen'
@@ -15,13 +19,17 @@ on:
         description: 'Ejecutar mqsicreatebar para compilar conjuntos de mensajes y código Java, valores permitidos (true, false)'
         required: false
         type: string
+      OVERRIDE_PROPERTIES:
+        description: 'Lista de propiedades que requieren hacer override al empaquetado bar'
+        required: false
+        type: string
   
 env:
   PROJECT_NAME: ${{ inputs.PROJECT_NAME }}
   LIBRARY_NAME: ${{ inputs.LIBRARY_NAME }}
   RUN_CREATE_BAR: ${{ inputs.RUN_CREATE_BAR }}
-  SERVER_NAME: ${{ secrets.SERVER_NAME }}
-  OVERRIDE_PROPERTIES: ${{ secrets.OVERRIDE_PROPERTIES }}
+  SERVER_NAME: ${{ inputs.SERVER_NAME }}
+  OVERRIDE_PROPERTIES: ${{ inputs.OVERRIDE_PROPERTIES }}
   CONNECTION_BROKER: ${{ secrets.IIB_PROD_CONNECTION_BROKER }}
   CONNECTION_BROKER2: ${{ secrets.IIB_PROD2_CONNECTION_BROKER }}
   PACKAGE_SCRIPT_PATH: ${{ secrets.IIB_PACKAGE_SCRIPT_PATH }}
