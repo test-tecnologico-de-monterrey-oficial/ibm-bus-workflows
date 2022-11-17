@@ -23,6 +23,10 @@ on:
         description: 'Lista de propiedades que requieren hacer override al empaquetado bar'
         required: false
         type: string
+      REPLICAR:
+        description: 'Indica si el despliegue se replicara el los Nodos de Integración, (true or false)'
+        required: false
+        type: boolean
   
 env:
   PROJECT_NAME: ${{ inputs.PROJECT_NAME }}
@@ -35,6 +39,7 @@ env:
   PACKAGE_SCRIPT_PATH: ${{ secrets.IIB_PACKAGE_SCRIPT_PATH }}
   DEPLOY_SCRIPT_PATH: ${{ secrets.IIB_DEPLOY_SCRIPT_PATH }}
   CLEAN_SCRIPT_PATH: ${{ secrets.IIB_CLEAN_SCRIPT_PATH }}
+  
 
 jobs:
   packageAndDeploy:
@@ -59,6 +64,7 @@ jobs:
           chmod +x $DEPLOY_SCRIPT_PATH 
           $DEPLOY_SCRIPT_PATH
   deploy2:
+    if: ${{ inputs.REPLICAR }}
     runs-on: [self-hosted, linux, x64, BUS]
     timeout-minutes: 5
     needs: packageAndDeploy
