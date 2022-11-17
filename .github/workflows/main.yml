@@ -65,7 +65,7 @@ jobs:
           chmod +x $DEPLOY_SCRIPT_PATH 
           $DEPLOY_SCRIPT_PATH
   deploy2:
-    if: $REPLICAR
+    if: ${{ inputs.REPLICAR }}
     runs-on: [self-hosted, linux, x64, BUS]
     timeout-minutes: 5
     needs: packageAndDeploy
